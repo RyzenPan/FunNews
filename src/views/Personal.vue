@@ -14,6 +14,33 @@
         <span class="iconfont iconjiantou1"></span>
       </div>
     </router-link>
+
+    <!-- 列表 -->
+    <ul>
+      <li>
+        <router-link class="list" to>
+          <p>我的关注</p>
+          <span>关注的用户 ></span>
+        </router-link>
+      </li>
+      <li>
+        <router-link class="list" to>
+          <p>我的跟帖</p>
+          <span>跟帖/回复 ></span>
+        </router-link>
+      </li>
+      <li>
+        <router-link class="list" to>
+          <p>我的收藏</p>
+          <span>文章/视频 ></span>
+        </router-link>
+      </li>
+      <li>
+        <router-link class="list" to>
+          <p>设置</p>
+        </router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -71,6 +98,22 @@ a {
     color: #666;
     font-size: 14px;
     margin-top: 5px;
+  }
+}
+
+.list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 0 20px;
+  border-bottom: 1px solid #ddd;
+  p {
+    font-size: 16px;
+    color: #333;
+  }
+  span {
+    font-size: 14px;
   }
 }
 </style>

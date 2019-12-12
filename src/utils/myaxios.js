@@ -9,7 +9,7 @@ axios.interceptors.request.use(function (config) {
   if (token) {
     config.headers.Authorization = token
   }
-  console.log(config)
+  //   console.log(config)
   return config
 }, function (error) {
   // 对请求错误做些什么

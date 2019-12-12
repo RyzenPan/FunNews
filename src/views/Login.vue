@@ -14,10 +14,10 @@
           <hminput
             v-model="userForm.username"
             placeholder="请输入账户/手机号"
-            msg_err="搞错手机号了"
+            msg_err="请输入正确的手机号码"
             :rules="/^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/"
           ></hminput>
-          <hminput type="password" placeholder="请输入密码" v-model="userForm.password"></hminput>
+          <hminput type="password" msg_err="请输入密码" placeholder="请输入密码" v-model="userForm.password"></hminput>
         </div>
         <p class="tips">
           没有账号？
@@ -47,21 +47,15 @@ export default {
     hminput
   },
   methods: {
-    login () {
-      // console.log(this.userForm)
-      // console.log(userLogin)
-      userLogin(this.userForm)
-        .then(res => {
-          console.log(res)
-          let id = res.data.data.user.id
-          window.localStorage.setItem('hm_token', res.data.data.token)
-          if (res.data.message === '登录成功') {
-            this.$router.push({ path: `/personal/${id}` })
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+    async login () {
+      const { data: res } = await userLogin(this.userForm)
+      if (res.message === '登录成功') {
+        let id = res.data.user.id
+        window.localStorage.setItem('hm_token', res.data.token)
+        this.$router.push({ path: `/personal/${id}` })
+      } else {
+        this.$toast(res.message)
+      }
     }
   }
 }
