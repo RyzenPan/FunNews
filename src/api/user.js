@@ -13,3 +13,19 @@ export const getUserInfo = id => {
     url: `/user/${id}`
   })
 }
+
+export const userRegister = data => {
+  return axios({
+    url: `/register`,
+    method: 'post',
+    data
+  })
+}
+
+export const editUser = (id, data) => {
+  return axios({
+    url: `/user_update/${id}`,
+    method: 'post',
+    data
+  })
+}

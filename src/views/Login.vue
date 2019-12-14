@@ -9,8 +9,6 @@
           <span class="iconfont iconnew"></span>
         </div>
         <div class="inputs">
-          <!-- <input data-v-744880be placeholder="请输入手机号" class="input" />
-          <input data-v-744880be placeholder="密码" class="input" type="password" />-->
           <hminput
             v-model="userForm.username"
             placeholder="请输入账户/手机号"
@@ -21,7 +19,7 @@
         </div>
         <p class="tips">
           没有账号？
-          <a href="#/register" class>去注册</a>
+          <router-link to="register">去注册</router-link>
         </p>
         <hmbutton text="登录" @click="login"></hmbutton>
       </div>
@@ -37,8 +35,8 @@ export default {
   data () {
     return {
       userForm: {
-        username: '',
-        password: ''
+        username: '10086',
+        password: '123'
       }
     }
   },
@@ -47,15 +45,17 @@ export default {
     hminput
   },
   methods: {
+    // 发起登录请求
     async login () {
-      const { data: res } = await userLogin(this.userForm)
-      if (res.message === '登录成功') {
-        let id = res.data.user.id
-        window.localStorage.setItem('hm_token', res.data.token)
-        this.$router.push({ path: `/personal/${id}` })
-      } else {
-        this.$toast(res.message)
+      const { data: res } = await userLogin(this.userForm).catch(err => err)
+      if (res.message !== '登录成功') {
+        return this.$toast(res.message)
       }
+      let id = res.data.user.id
+      // 把token存到localStorage中
+      window.localStorage.setItem('hm_token', res.data.token)
+      // 跳转到个人页面
+      this.$router.push({ path: `/personal/${id}` })
     }
   }
 }
@@ -64,6 +64,8 @@ export default {
 <style lang="less" scoped>
 .container {
   padding: 20px;
+  background-color: #f2f2f2;
+  height: 94vh;
 }
 
 .close {
@@ -86,6 +88,7 @@ export default {
 .inputs {
   input {
     margin-bottom: 20px;
+    background-color: transparent;
   }
 }
 

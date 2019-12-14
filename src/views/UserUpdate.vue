@@ -1,87 +1,182 @@
 <template>
-  <div class="edit">
-    <header>
-      <span class="iconfont iconjiantou2" @click="$router.go(-1)"></span>
-      <p>编辑资料</p>
-      <div></div>
-    </header>
-    <div class="userPic">
-      <img src="http://img2.imgtn.bdimg.com/it/u=3432277981,2726991059&fm=26&gp=0.jpg" alt />
+  <div class="editPersonal">
+    <hmheader title="编辑个人信息">
+      <span class="iconfont iconjiantou2" slot="left" @click="$router.go(-1)"></span>
+      <!-- <span slot="right">退出</span> -->
+    </hmheader>
+    <div class="head">
+      <img alt :src="current.head_img" />
+      <van-uploader :after-read="afterRead" />
     </div>
-    <ul>
-      <li>
-        <router-link class="list" to>
-          <p>昵称</p>
-          <span>
-            火星网友
-            <span class="iconfont iconjiantou1"></span>
-          </span>
-        </router-link>
-        <router-link class="list" to>
-          <p>密码</p>
-          <span>
-            ******
-            <span class="iconfont iconjiantou1"></span>
-          </span>
-        </router-link>
-        <router-link class="list" to>
-          <p>性别</p>
-          <span>
-            男
-            <span class="iconfont iconjiantou1"></span>
-          </span>
-        </router-link>
-      </li>
-    </ul>
+    <hmcell title="昵称" :desc="current.nickname " @click="nickshow = !nickshow"></hmcell>
+    <hmcell title="密码" desc="***** " @click="pwdshow = !pwdshow"></hmcell>
+    <hmcell title="性别" :desc="current.gender " @click="showPicker = true"></hmcell>
+
+    <!-- 昵称弹出框 -->
+    <van-dialog v-model="nickshow" title="修改昵称" show-cancel-button @confirm="confirmNickname">
+      <van-field
+        :value="current.nickname"
+        required
+        ref="nicknameDialog"
+        label="昵称"
+        right-icon="question-o"
+        placeholder="请输入昵称"
+        @click-right-icon="$toast('请输入3到16位的用户名')"
+      />
+    </van-dialog>
+    <!-- 密码弹出框 -->
+    <van-dialog v-model="pwdshow" title="修改密码" show-cancel-button @confirm="confirmPwd">
+      <van-field
+        required
+        ref="pwdDialog"
+        label="密码"
+        right-icon="question-o"
+        placeholder="请输入密码"
+        @click-right-icon="$toast('请输入要设置的密码')"
+      />
+    </van-dialog>
+    <!-- 性别选择 -->
+    <van-popup v-model="showPicker" position="bottom">
+      <van-picker
+        show-toolbar
+        :columns="columns"
+        @cancel="showPicker = false"
+        @confirm="genderConfirm"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
-export default {}
+import hmheader from '@/components/hm_header.vue'
+import hmcell from '@/components/hm_cell.vue'
+import { uploadFile } from '@/api/uploadFile.js'
+import { editUser, getUserInfo } from '@/api/user.js'
+export default {
+  data () {
+    return {
+      id: '',
+      current: {
+        head_img: ''
+      },
+      // 控制昵称弹窗
+      nickshow: false,
+      // 控制密码弹窗
+      pwdshow: false,
+      // 性别选择数据
+      value: '',
+      showPicker: false,
+      columns: ['男', '女']
+    }
+  },
+  async mounted () {
+    this.id = this.$route.params.id
+    const { data: res } = await getUserInfo(this.id)
+    this.current = res.data
+    if (res.data.gender === 1) {
+      this.current.gender = '男'
+    } else {
+      this.current.gender = '女'
+    }
+    if (res.data.head_img) {
+      this.current.head_img =
+        localStorage.getItem('hm_baseURL') + res.data.head_img
+    } else {
+      this.current.head_img =
+        localStorage.getItem('hm_baseURL') + '/uploads/image/default.jpeg'
+    }
+  },
+  components: {
+    hmheader,
+    hmcell
+  },
+  methods: {
+    async afterRead (file) {
+      // 此时可以自行将文件上传至服务器
+      // console.log(file)
+      let formData = new FormData()
+      formData.append('file', file.file)
+      const { data: res } = await uploadFile(formData)
+      if (res.message !== '文件上传成功') {
+        return this.$toast.fail('文件上传失败')
+      }
+      this.$toast.success('文件上传成功')
+      const { data: res1 } = await editUser(this.id, { head_img: res.data.url })
+      if (res1.message !== '修改成功') {
+        return this.$toast.fail('修改失败')
+      }
+      this.current.head_img = localStorage.getItem('hm_baseURL') + res.data.url
+    },
+    // 昵称修改框
+    async confirmNickname () {
+      let nicknameVal = this.$refs.nicknameDialog.$refs.input.value
+      const { data: res } = await editUser(this.id, { nickname: nicknameVal })
+      if (res.message !== '修改成功') {
+        return this.$toast.fail('修改失败，请重试')
+      }
+      this.$toast.success('修改成功')
+      this.current.nickname = nicknameVal
+    },
+    // 修改密码对话框
+    async confirmPwd () {
+      let password = this.$refs.pwdDialog.$refs.input.value
+      const { data: res } = await editUser(this.id, { password })
+      if (res.message !== '修改成功') {
+        return this.$toast.fail('修改失败，请重试')
+      }
+      this.$toast.success('修改成功')
+    },
+    // 性别选择器
+    async genderConfirm (value) {
+      this.value = value
+      let gender = 0
+      if (value === '男') {
+        gender = 1
+      }
+      const { data: res } = await editUser(this.id, { gender })
+      if (res.message !== '修改成功') {
+        return this.$toast.fail('修改失败，请重试')
+      }
+      this.$toast.success('修改成功')
+      if (gender === 1) {
+        this.current.gender = '男'
+      } else if (gender === 0) {
+        this.current.gender = '女'
+      }
+      this.showPicker = false
+    }
+  }
+}
 </script>
 
-<style lang="less" scoped>
-.list {
+<style lang='less' scoped>
+.head {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  height: 60px;
-  padding: 0 20px;
-  border-bottom: 1px solid #ddd;
-  p {
-    font-size: 16px;
-    color: #333;
-  }
-  span {
-    font-size: 14px;
-    color: #999;
-  }
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 60px;
-  span {
-    font-size: 20px;
-    margin-left: 20px;
-  }
-  p {
-    font-size: 18px;
-    font-weight: bold;
-    transform: translateX(-19px);
-  }
-}
-.userPic {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: 20px auto;
+  padding: 20px;
+  position: relative;
+  border-bottom: 2px solid #ddd;
   img {
-    width: 100%;
-    height: 100%;
+    display: block;
+    width: 100 / 360 * 100vw;
+    height: 100 / 360 * 100vw;
+    border-radius: 50%;
   }
+  /deep/.van-uploader__upload {
+    width: 100 / 360 * 100vw;
+    height: 100 / 360 * 100vw;
+  }
+  /deep/.van-uploader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+}
+.editPersonal {
+  background-color: #f2f2f2;
+  height: 100vh;
 }
 </style>

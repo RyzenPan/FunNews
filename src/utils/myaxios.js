@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 axios.defaults.baseURL = 'http://localhost:3000'
+localStorage.setItem('hm_baseURL', axios.defaults.baseURL)
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {

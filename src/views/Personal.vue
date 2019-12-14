@@ -14,48 +14,25 @@
         <span class="iconfont iconjiantou1"></span>
       </div>
     </div>
+    <!-- 信息栏 -->
+    <hmcell title="我的关注" desc="关注的用户 "></hmcell>
+    <hmcell title="我的跟帖" desc="跟帖/回复 "></hmcell>
+    <hmcell title="我的收藏" desc="文章/视频 "></hmcell>
+    <hmcell title="设置" desc></hmcell>
 
-    <!-- 列表 -->
-    <ul>
-      <li>
-        <router-link class="list" to>
-          <p>我的关注</p>
-          <span>
-            关注的用户
-            <span class="iconfont iconjiantou1"></span>
-          </span>
-        </router-link>
-      </li>
-      <li>
-        <router-link class="list" to>
-          <p>我的跟帖</p>
-          <span>
-            跟帖/回复
-            <span class="iconfont iconjiantou1"></span>
-          </span>
-        </router-link>
-      </li>
-      <li>
-        <router-link class="list" to>
-          <p>我的收藏</p>
-          <span>
-            文章/视频
-            <span class="iconfont iconjiantou1"></span>
-          </span>
-        </router-link>
-      </li>
-      <li>
-        <router-link class="list" to>
-          <p>设置</p>
-        </router-link>
-      </li>
-    </ul>
+    <hmButton text="退出登录" @click="outLine"></hmButton>
   </div>
 </template>
 
 <script>
 import { getUserInfo } from '@/api/user.js'
+import hmcell from '@/components/hm_cell.vue'
+import hmButton from '@/components/hm_button.vue'
 export default {
+  components: {
+    hmcell,
+    hmButton
+  },
   data () {
     return {
       userInfoOBJ: {}
@@ -64,13 +41,23 @@ export default {
   async mounted () {
     let id = this.$route.params.id
     const { data: res } = await getUserInfo(id)
-    // console.log(res)
     this.userInfoOBJ = res.data
+    if (res.data.head_img) {
+      this.userInfoOBJ.head_img =
+        localStorage.getItem('hm_baseURL') + res.data.head_img
+    } else {
+      this.userInfoOBJ.head_img =
+        localStorage.getItem('hm_baseURL') + '/uploads/image/default.jpeg'
+    }
   },
   methods: {
     editUser () {
       // console.log(this.userInfoOBJ.id)
       this.$router.push({ path: `/userUpdate/${this.userInfoOBJ.id}` })
+    },
+    outLine () {
+      localStorage.clear()
+      this.$router.push({ name: 'Login' })
     }
   }
 }
@@ -80,7 +67,7 @@ export default {
 .personal {
   width: 100vw;
   height: 100vh;
-  background-color: #eee;
+  background-color: #f2f2f2;
 }
 a {
   color: #666;
@@ -116,20 +103,7 @@ a {
   }
 }
 
-.list {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 60px;
-  padding: 0 20px;
-  border-bottom: 1px solid #ddd;
-  p {
-    font-size: 16px;
-    color: #333;
-  }
-  span {
-    font-size: 14px;
-    color: #999;
-  }
+.btn {
+  margin: 50px auto;
 }
 </style>

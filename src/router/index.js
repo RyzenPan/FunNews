@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 import Personal from '@/views/Personal.vue'
 import UserUpdate from '@/views/UserUpdate.vue'
+import Register from '@/views/Register.vue'
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/userUpdate/:id',
     name: 'UserUpdate',
     component: UserUpdate
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
   }
 ]
 
