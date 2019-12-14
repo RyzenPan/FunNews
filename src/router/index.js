@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 import Personal from '@/views/Personal.vue'
+import UserUpdate from '@/views/UserUpdate.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/personal/:id',
     name: 'Personal',
     component: Personal
+  },
+  {
+    path: '/userUpdate/:id',
+    name: 'UserUpdate',
+    component: UserUpdate
   }
 ]
 

@@ -1,6 +1,6 @@
 <template>
   <div class="personal">
-    <router-link to="/edit_profile">
+    <div @click="editUser">
       <div class="profile">
         <!-- $axios.defaults.baseURL读取axios的服务器路径 -->
         <img :src="userInfoOBJ.head_img" alt />
@@ -13,26 +13,35 @@
         </div>
         <span class="iconfont iconjiantou1"></span>
       </div>
-    </router-link>
+    </div>
 
     <!-- 列表 -->
     <ul>
       <li>
         <router-link class="list" to>
           <p>我的关注</p>
-          <span>关注的用户 ></span>
+          <span>
+            关注的用户
+            <span class="iconfont iconjiantou1"></span>
+          </span>
         </router-link>
       </li>
       <li>
         <router-link class="list" to>
           <p>我的跟帖</p>
-          <span>跟帖/回复 ></span>
+          <span>
+            跟帖/回复
+            <span class="iconfont iconjiantou1"></span>
+          </span>
         </router-link>
       </li>
       <li>
         <router-link class="list" to>
           <p>我的收藏</p>
-          <span>文章/视频 ></span>
+          <span>
+            文章/视频
+            <span class="iconfont iconjiantou1"></span>
+          </span>
         </router-link>
       </li>
       <li>
@@ -55,8 +64,14 @@ export default {
   async mounted () {
     let id = this.$route.params.id
     const { data: res } = await getUserInfo(id)
-    console.log(res)
+    // console.log(res)
     this.userInfoOBJ = res.data
+  },
+  methods: {
+    editUser () {
+      // console.log(this.userInfoOBJ.id)
+      this.$router.push({ path: `/userUpdate/${this.userInfoOBJ.id}` })
+    }
   }
 }
 </script>
@@ -114,6 +129,7 @@ a {
   }
   span {
     font-size: 14px;
+    color: #999;
   }
 }
 </style>
