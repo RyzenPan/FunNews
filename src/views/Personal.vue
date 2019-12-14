@@ -6,7 +6,9 @@
         <img :src="userInfoOBJ.head_img" alt />
         <div class="profile-center">
           <div class="name">
-            <span class="iconfont iconxingbienan"></span>
+            <span
+              :class="['iconfont',userInfoOBJ.gender === 1 ? 'iconxingbienan' : 'iconxingbienv'] "
+            ></span>
             {{userInfoOBJ.nickname}}
           </div>
           <div class="time">2019-9-24</div>

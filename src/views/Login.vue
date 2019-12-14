@@ -2,7 +2,7 @@
   <div class="login">
     <div id="app">
       <div class="container">
-        <div class="close">
+        <div class="close" @click="$router.go(-1)">
           <span class="iconfont iconicon-test"></span>
         </div>
         <div class="logo">

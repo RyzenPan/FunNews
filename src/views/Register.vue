@@ -1,7 +1,7 @@
 <template>
   <div class="register">
     <div class="container">
-      <div class="close">
+      <div class="close" @click="$router.go(-1)">
         <span class="iconfont iconicon-test"></span>
       </div>
       <div class="logo">
@@ -10,7 +10,7 @@
       <div class="inputs">
         <hminput
           v-model="userForm.username"
-          placeholder="用户名 / 手机号码"
+          placeholder="用户名/手机号码"
           msg_err="请输入正确的手机号码"
           :rules="/^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/"
         ></hminput>
@@ -42,6 +42,13 @@ export default {
   },
   methods: {
     async register () {
+      if (!this.userForm.username) {
+        return this.$toast('请输入手机号码')
+      } else if (!this.userForm.password) {
+        return this.$toast('请输入密码')
+      } else if (!this.userForm.nickname) {
+        return this.$toast('请输入昵称')
+      }
       const { data: res } = await userRegister(this.userForm).catch(err => err)
       if (res.message !== '注册成功') {
         return this.$toast(res.message)
