@@ -1,5 +1,6 @@
 <template>
   <div class="personal">
+    <router-view></router-view>
     <div @click="editUser">
       <div class="profile">
         <!-- $axios.defaults.baseURL读取axios的服务器路径 -->
@@ -17,11 +18,10 @@
       </div>
     </div>
     <!-- 信息栏 -->
-    <hmcell title="我的关注" desc="关注的用户 "></hmcell>
+    <hmcell title="我的关注" desc="关注的用户 " @click="gotoFocus"></hmcell>
     <hmcell title="我的跟帖" desc="跟帖/回复 "></hmcell>
     <hmcell title="我的收藏" desc="文章/视频 "></hmcell>
     <hmcell title="设置" desc></hmcell>
-
     <hmButton text="退出登录" @click="outLine"></hmButton>
   </div>
 </template>
@@ -55,11 +55,15 @@ export default {
   methods: {
     editUser () {
       // console.log(this.userInfoOBJ.id)
+      // 跳转资料编辑页面
       this.$router.push({ path: `/userUpdate/${this.userInfoOBJ.id}` })
     },
     outLine () {
       localStorage.clear()
       this.$router.push({ name: 'Login' })
+    },
+    gotoFocus () {
+      this.$router.push({ name: 'MyFocus' })
     }
   }
 }

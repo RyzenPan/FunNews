@@ -1,9 +1,19 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
+import Index from '@/views/Index.vue'
 import Personal from '@/views/Personal.vue'
 import UserUpdate from '@/views/UserUpdate.vue'
 import Register from '@/views/Register.vue'
+import MyFocus from '@/views/MyFocus.vue'
+
+/**
+ * 重写路由的push方法
+ */
+const routerPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return routerPush.call(this, location).catch(error => error)
+}
 
 Vue.use(VueRouter)
 
@@ -14,9 +24,21 @@ const routes = [
     component: Login
   },
   {
+    path: '/',
+    name: 'Index',
+    component: Index
+  },
+  {
     path: '/personal/:id',
     name: 'Personal',
-    component: Personal
+    component: Personal,
+    children: [
+      {
+        path: 'myFocus',
+        name: 'MyFocus',
+        component: MyFocus
+      }
+    ]
   },
   {
     path: '/userUpdate/:id',

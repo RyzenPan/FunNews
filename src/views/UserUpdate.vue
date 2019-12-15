@@ -10,7 +10,7 @@
     </div>
     <hmcell title="昵称" :desc="current.nickname " @click="nickshow = !nickshow"></hmcell>
     <hmcell title="密码" desc="***** " @click="pwdshow = !pwdshow"></hmcell>
-    <hmcell title="性别" :desc="current.gender " @click="showPicker = true"></hmcell>
+    <hmcell title="性别" :desc="gender " @click="showPicker = true"></hmcell>
 
     <!-- 昵称弹出框 -->
     <van-dialog v-model="nickshow" title="修改昵称" show-cancel-button @confirm="confirmNickname">
@@ -25,13 +25,27 @@
       />
     </van-dialog>
     <!-- 密码弹出框 -->
-    <van-dialog v-model="pwdshow" title="修改密码" show-cancel-button @confirm="confirmPwd">
+    <van-dialog
+      v-model="pwdshow"
+      title="修改密码"
+      show-cancel-button
+      :before-close="beforeClose"
+      :confirm="confirmPwd"
+    >
       <van-field
         required
-        ref="pwdDialog"
-        label="密码"
+        ref="oldPwd"
+        label="原密码"
         right-icon="question-o"
-        placeholder="请输入密码"
+        placeholder="请输入原密码"
+        @click-right-icon="$toast('请输入原有密码')"
+      />
+      <van-field
+        required
+        ref="newPwd"
+        label="新密码"
+        right-icon="question-o"
+        placeholder="请输入新密码"
         @click-right-icon="$toast('请输入要设置的密码')"
       />
     </van-dialog>
@@ -39,7 +53,7 @@
     <van-popup v-model="showPicker" position="bottom">
       <van-picker
         show-toolbar
-        :columns="columns"
+        :columns="['女', '男']"
         @cancel="showPicker = false"
         @confirm="genderConfirm"
       />
@@ -64,9 +78,8 @@ export default {
       // 控制密码弹窗
       pwdshow: false,
       // 性别选择数据
-      value: '',
-      showPicker: false,
-      columns: ['男', '女']
+      gender: '',
+      showPicker: false
     }
   },
   async mounted () {
@@ -74,9 +87,9 @@ export default {
     const { data: res } = await getUserInfo(this.id)
     this.current = res.data
     if (res.data.gender === 1) {
-      this.current.gender = '男'
+      this.gender = '男'
     } else {
-      this.current.gender = '女'
+      this.gender = '女'
     }
     if (res.data.head_img) {
       this.current.head_img =
@@ -119,29 +132,40 @@ export default {
     },
     // 修改密码对话框
     async confirmPwd () {
-      let password = this.$refs.pwdDialog.$refs.input.value
+      if (this.current.password !== this.$refs.oldPwd.$refs.input.value) {
+        return this.$toast.fail('原密码输入错误')
+      }
+      let password = this.$refs.newPwd.$refs.input.value
       const { data: res } = await editUser(this.id, { password })
       if (res.message !== '修改成功') {
         return this.$toast.fail('修改失败，请重试')
       }
       this.$toast.success('修改成功')
+      this.pwdshow = false
+    },
+    // 控制密码框按钮
+    beforeClose (action, done) {
+      if (action === 'confirm') {
+        if (this.current.password !== this.$refs.oldPwd.$refs.input.value) {
+          this.$toast.fail('原密码输入错误')
+        }
+        done(false)
+      } else {
+        done()
+      }
     },
     // 性别选择器
-    async genderConfirm (value) {
-      this.value = value
-      let gender = 0
-      if (value === '男') {
-        gender = 1
-      }
+    async genderConfirm (value, index) {
+      let gender = index
       const { data: res } = await editUser(this.id, { gender })
       if (res.message !== '修改成功') {
         return this.$toast.fail('修改失败，请重试')
       }
       this.$toast.success('修改成功')
       if (gender === 1) {
-        this.current.gender = '男'
+        this.gender = '男'
       } else if (gender === 0) {
-        this.current.gender = '女'
+        this.gender = '女'
       }
       this.showPicker = false
     }

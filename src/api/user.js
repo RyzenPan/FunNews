@@ -29,3 +29,9 @@ export const editUser = (id, data) => {
     data
   })
 }
+
+export const getFocusListInfo = (id) => {
+  return axios({
+    url: `/user_follows`
+  })
+}
