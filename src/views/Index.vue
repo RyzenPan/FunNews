@@ -6,9 +6,9 @@
       <div class="center">
         <van-icon name="search" class="searchIcon" />&nbsp;&nbsp;搜索新闻
       </div>
-      <div class="right">
+      <router-link to="/login" class="right">
         <van-icon name="user-circle-o" class="headerICON" />
-      </div>
+      </router-link>
     </div>
     <!-- Tab导航栏 -->
     <van-tabs v-model="active" sticky swipeable>
@@ -44,12 +44,19 @@ export default {
       return {
         ...item,
         pageIndex: 1,
-        pageSize: 5,
+        pageSize: 100,
         postList: []
       }
     })
     console.log(this.cateList)
     this.getPostListFunc()
+  },
+  watch: {
+    active () {
+      if (this.cateList[this.active].postList.length === 0) {
+        this.getPostListFunc()
+      }
+    }
   },
   methods: {
     async getPostListFunc () {
@@ -86,6 +93,7 @@ export default {
   }
   .right {
     width: 60px;
+    color: #fff;
     .headerICON {
       font-size: 30px;
       margin-left: 20px;

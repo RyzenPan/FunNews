@@ -132,10 +132,12 @@ export default {
     },
     // 修改密码对话框
     async confirmPwd () {
+      let password = this.$refs.newPwd.$refs.input.value
       if (this.current.password !== this.$refs.oldPwd.$refs.input.value) {
         return this.$toast.fail('原密码输入错误')
+      } else if (password === '') {
+        return this.$toast.fail('密码不能为空，请重新输入')
       }
-      let password = this.$refs.newPwd.$refs.input.value
       const { data: res } = await editUser(this.id, { password })
       if (res.message !== '修改成功') {
         return this.$toast.fail('修改失败，请重试')
@@ -145,10 +147,15 @@ export default {
     },
     // 控制密码框按钮
     beforeClose (action, done) {
-      if (action === 'confirm') {
-        if (this.current.password !== this.$refs.oldPwd.$refs.input.value) {
-          this.$toast.fail('原密码输入错误')
-        }
+      let password = this.$refs.newPwd.$refs.input.value
+      if (
+        action === 'confirm' &&
+        this.current.password !== this.$refs.oldPwd.$refs.input.value
+      ) {
+        this.$toast.fail('原密码输入错误')
+        done(false)
+      } else if (action === 'confirm' && password === '') {
+        this.$toast.fail('密码不能为空，请重新输入')
         done(false)
       } else {
         done()
