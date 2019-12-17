@@ -6,6 +6,8 @@ import Personal from '@/views/Personal.vue'
 import UserUpdate from '@/views/UserUpdate.vue'
 import Register from '@/views/Register.vue'
 import MyFocus from '@/views/MyFocus.vue'
+import Search from '@/views/Search.vue'
+import Category from '@/views/Category.vue'
 
 /**
  * 重写路由的push方法
@@ -41,6 +43,11 @@ const routes = [
     ]
   },
   {
+    path: '/search',
+    name: 'Search',
+    component: Search
+  },
+  {
     path: '/userUpdate/:id',
     name: 'UserUpdate',
     component: UserUpdate
@@ -49,6 +56,11 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register
+  },
+  {
+    path: '/category',
+    name: 'Category',
+    component: Category
   }
 ]
 

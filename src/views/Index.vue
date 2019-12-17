@@ -3,17 +3,28 @@
     <!-- 头部 -->
     <div class="header">
       <span class="iconfont iconnew logoIcon"></span>
-      <div class="center">
+      <router-link to="/search" class="center">
         <van-icon name="search" class="searchIcon" />&nbsp;&nbsp;搜索新闻
-      </div>
-      <router-link to="/login" class="right">
-        <van-icon name="user-circle-o" class="headerICON" />
       </router-link>
+      <div @click="myPersonal" class="right">
+        <van-icon name="user-circle-o" class="headerICON" />
+      </div>
     </div>
     <!-- Tab导航栏 -->
     <van-tabs v-model="active" sticky swipeable>
       <van-tab :title="cate.name" v-for="cate in cateList" :key="cate.id">
-        <hmPostCell v-for="post in cate.postList" :key="post.id" :post="post"></hmPostCell>
+        <van-list
+          v-model="cate.loading"
+          :immediate-check="false"
+          :offset="10"
+          :finished="cate.finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <van-pull-refresh v-model="cate.isLoading" @refresh="onRefresh">
+            <hmPostCell v-for="post in cate.postList" :key="post.id" :post="post"></hmPostCell>
+          </van-pull-refresh>
+        </van-list>
       </van-tab>
     </van-tabs>
   </div>
@@ -44,11 +55,14 @@ export default {
       return {
         ...item,
         pageIndex: 1,
-        pageSize: 100,
-        postList: []
+        pageSize: 6,
+        postList: [],
+        finished: false,
+        loading: false,
+        isLoading: false
       }
     })
-    console.log(this.cateList)
+    // console.log(this.cateList)
     this.getPostListFunc()
   },
   watch: {
@@ -65,9 +79,39 @@ export default {
         pageIndex: this.cateList[this.active].pageIndex,
         pageSize: this.cateList[this.active].pageSize
       })
-      // console.log(res1)
-      this.cateList[this.active].postList = res.data.data
-      console.log(this.cateList[this.active].postList)
+      console.log(res)
+      this.cateList[this.active].postList.push(...res.data.data)
+      this.cateList[this.active].loading = false
+      this.cateList[this.active].isLoading = false
+      if (res.data.data.length < this.cateList[this.active].pageSize) {
+        this.cateList[this.active].finished = true
+      }
+    },
+    // 加载更多插件
+    onLoad () {
+      this.cateList[this.active].pageIndex++
+      setTimeout(() => {
+        this.getPostListFunc()
+      }, 2000)
+    },
+    // 下拉刷新
+    onRefresh () {
+      this.cateList[this.active].pageIndex = 1
+      this.cateList[this.active].finished = false
+      setTimeout(() => {
+        // 清除数组的所有数据，可以避免反复的创建新的数组
+        this.cateList[this.active].postList.length = 0
+        this.getPostListFunc()
+        this.$toast('刷新成功')
+        this.isLoading = false
+      }, 500)
+    },
+    // 跳转到个人信息页面
+    myPersonal () {
+      this.$router.push({
+        // 如果本地存储中没有id，则直接返回1，然后通过拦截器跳转到登录页面
+        path: `/personal/${window.localStorage.getItem('hm_userId') || 1}`
+      })
     }
   }
 }
@@ -90,6 +134,7 @@ export default {
     line-height: 34px;
     border-radius: 17px;
     padding-left: 15px;
+    color: #fff;
   }
   .right {
     width: 60px;

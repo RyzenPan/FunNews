@@ -54,6 +54,7 @@ export default {
       let id = res.data.user.id
       // 把token存到localStorage中
       window.localStorage.setItem('hm_token', res.data.token)
+      window.localStorage.setItem('hm_userId', res.data.user.id)
       // 跳转到个人页面
       this.$router.push({ path: `/personal/${id}` })
     }

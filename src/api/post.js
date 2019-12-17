@@ -6,3 +6,16 @@ export const getPostList = (params) => {
     params
   })
 }
+
+export const getSearchList = () => {
+  return axios({
+    url: '/post_search_recommend'
+  })
+}
+
+export const getSearchTotal = (params) => {
+  return axios({
+    url: '/post_search',
+    params
+  })
+}

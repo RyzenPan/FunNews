@@ -5,6 +5,7 @@ localStorage.setItem('hm_baseURL', axios.defaults.baseURL)
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
+  localStorage.setItem('hm_baseURL', axios.defaults.baseURL)
   // 在发送请求之前做些什么
   let token = window.localStorage.getItem('hm_token')
   if (token) {
