@@ -9,6 +9,7 @@ import MyFocus from '@/views/MyFocus.vue'
 import Search from '@/views/Search.vue'
 import Category from '@/views/Category.vue'
 import ArticleDetail from '@/views/ArticleDetail.vue'
+import SearchList from '@/views/SearchList.vue'
 
 /**
  * 重写路由的push方法
@@ -47,6 +48,11 @@ const routes = [
     path: '/search',
     name: 'Search',
     component: Search
+  },
+  {
+    path: '/searchList',
+    name: 'SearchList',
+    component: SearchList
   },
   {
     path: '/userUpdate/:id',

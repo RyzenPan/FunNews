@@ -1,10 +1,13 @@
 <template>
   <div class="search">
     <div class="header">
-      <van-icon name="arrow-left" style="font-size:20px" />
+      <div @click="$router.go(-1)">
+        <van-icon name="arrow-left" style="font-size:20px" />
+      </div>
+
       <div class="searchInput">
         <van-icon name="search" class="searchIcon" />
-        <input type="text" placeholder="通宵很爽喔" ref="inputSearch" />
+        <input type="text" placeholder="输入搜索" ref="inputSearch" autofocus />
       </div>
       <div class="searchBtn" @click="searchNews">搜索</div>
     </div>
@@ -38,7 +41,7 @@
 </template>
 
 <script>
-import { getSearchList, getSearchTotal } from '@/api/post.js'
+import { getSearchList } from '@/api/post.js'
 
 export default {
   data () {
@@ -70,14 +73,18 @@ export default {
       console.log(value)
     },
     async searchNews () {
-      let searchKeywords = this.$refs.inputSearch.value
-      console.log(searchKeywords)
-      const { data: res } = await getSearchTotal({
-        pageIndex: 1,
-        pageSize: 2,
-        keyword: searchKeywords
-      })
-      console.log(res)
+      // let searchKeywords = this.$refs.inputSearch.value
+      // console.log(searchKeywords)
+      // const { data: res } = await getSearchTotal({
+      //   pageIndex: 1,
+      //   pageSize: 2,
+      //   keyword: searchKeywords
+      // })
+      // console.log(res)
+      // 抓取输入框内容带到搜索内容页
+      let keyword = this.$refs.inputSearch.value
+      console.log(keyword)
+      this.$router.push({ name: 'SearchList', params: { keyword } })
     }
   }
 }
