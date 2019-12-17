@@ -62,7 +62,7 @@ export default {
         isLoading: false
       }
     })
-    // console.log(this.cateList)
+    console.log(this.cateList)
     this.getPostListFunc()
   },
   watch: {

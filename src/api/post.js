@@ -19,3 +19,23 @@ export const getSearchTotal = (params) => {
     params
   })
 }
+// 获取文章详情
+export const getArticleDetail = (id) => {
+  return axios({
+    url: `/post/${id}`
+  })
+}
+
+// 文章点赞
+export const ArticleLike = (id) => {
+  return axios({
+    url: `/post_like/${id}`
+  })
+}
+
+// 获取评论列表
+export const getCommentData = (id) => {
+  return axios({
+    url: `/post_comment/${id}`
+  })
+}

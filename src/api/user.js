@@ -35,3 +35,15 @@ export const getFocusListInfo = (id) => {
     url: `/user_follows`
   })
 }
+// 关注用户
+export const userFollow = (id) => {
+  return axios({
+    url: `/user_follows/${id}`
+  })
+}
+// 取消关注用户
+export const UnuserFollow = (id) => {
+  return axios({
+    url: `/user_unfollow/${id}`
+  })
+}

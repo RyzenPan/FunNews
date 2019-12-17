@@ -8,6 +8,7 @@ import Register from '@/views/Register.vue'
 import MyFocus from '@/views/MyFocus.vue'
 import Search from '@/views/Search.vue'
 import Category from '@/views/Category.vue'
+import ArticleDetail from '@/views/ArticleDetail.vue'
 
 /**
  * 重写路由的push方法
@@ -61,6 +62,11 @@ const routes = [
     path: '/category',
     name: 'Category',
     component: Category
+  },
+  {
+    path: '/articleDetail/:id',
+    name: 'ArticleDetail',
+    component: ArticleDetail
   }
 ]
 
