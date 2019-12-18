@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <div class="header">
       <div class="left">
-        <van-icon name="arrow-left back" @click="$router.back()" />
+        <van-icon name="arrow-left back" @click="$router.go(-1)" />
         <span class="iconfont iconnew new"></span>
       </div>
       <span
@@ -82,8 +82,6 @@ export default {
     // 获取评论列表
     const res1 = await getCommentData(this.$route.params.id)
     this.commentData = res1.data.data
-    console.log(res1)
-    console.log(this.commentData)
   },
   methods: {
     async userFollowBtn (uid) {
@@ -93,6 +91,7 @@ export default {
       }
       if (!this.articleDetailData.has_follow) {
         res = await userFollow(uid)
+        console.log(res)
         if (res.status !== 200) {
           return this.$toast.fail('关注失败')
         }

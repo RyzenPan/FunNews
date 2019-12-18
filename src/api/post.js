@@ -46,3 +46,12 @@ export const ArticleStar = (id) => {
     url: `/post_star/${id}`
   })
 }
+
+// 发布评论
+export const coommentSend = (id, data) => {
+  return axios({
+    method: 'post',
+    url: `/post_comment/${id}`,
+    data
+  })
+}

@@ -4,7 +4,7 @@
       <input type="text" placeholder="写跟帖" @focus="handlerFocus" />
       <span class="comment">
         <i class="iconfont iconpinglun-"></i>
-        <em>100</em>
+        <em>{{article.comment_length}}</em>
       </span>
       <i class="iconfont iconshoucang" :class="{active:article.has_star}" @click="starThisArticle"></i>
       <i class="iconfont iconfenxiang"></i>
@@ -12,7 +12,8 @@
     <div class="inputcomment" v-show="isFocus">
       <textarea ref="commtext" rows="5"></textarea>
       <div>
-        <span>发送</span>
+        <span @click="sendThisComment">发送</span>
+        <br />
         <span @click="isFocus=false">取消</span>
       </div>
     </div>
@@ -20,7 +21,7 @@
 </template>
 
 <script>
-import { ArticleStar } from '@/api/post.js'
+import { ArticleStar, coommentSend } from '@/api/post.js'
 export default {
   props: ['article'],
   data () {
@@ -42,6 +43,22 @@ export default {
       console.log(res)
       this.article.has_star = !this.article.has_star
       this.$toast.success(res.data.message)
+    },
+    // 发送留言
+    async sendThisComment () {
+      const res = await coommentSend(this.article.id, {
+        id: this.article.id,
+        content: this.$refs.commtext.value,
+        parent_id: this.article.user.id
+      })
+      // console.log(res)
+      if (res.status !== 200) {
+        return this.$toast.fail(res.data.message)
+      }
+      // this.router.push({留言页})
+      this.$toast.success(res.data.message)
+      this.$refs.commtext.value = ''
+      this.isFocus = false
     }
   }
 }

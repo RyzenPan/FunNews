@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Toast } from 'vant'
 
 axios.defaults.baseURL = 'http://localhost:3000'
 localStorage.setItem('hm_baseURL', axios.defaults.baseURL)
@@ -20,6 +21,12 @@ axios.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 axios.interceptors.response.use(function (response) {
+  if (response.data.message === '用户信息验证失败!' || response.data.message === '用户信息验证失败') {
+    // 给出提示
+    Toast.fail('用户信息验证失败,请登录')
+    // 重定向
+    window.location.href = '/login'
+  }
   // 对响应数据做点什么
   return response
 }, function (error) {
