@@ -1,5 +1,6 @@
 <template>
   <div class="articaldetail">
+    <!-- 头部 -->
     <div class="header">
       <div class="left">
         <van-icon name="arrow-left back" @click="$router.back()" />
@@ -10,6 +11,7 @@
         @click="userFollowBtn(articleDetailData.user.id)"
       >{{articleDetailData.has_follow?'已关注':'关注'}}</span>
     </div>
+    <!-- 内容区域 -->
     <div class="detail">
       <div class="title">{{articleDetailData.title}}</div>
       <div class="desc">
@@ -49,13 +51,19 @@
       </div>
       <div class="more">更多跟帖</div>
     </div>
+    <!-- 底部固定评论 -->
+    <hmCommentArea :article="articleDetailData"></hmCommentArea>
   </div>
 </template>
 
 <script>
 import { getArticleDetail, ArticleLike, getCommentData } from '@/api/post.js'
 import { userFollow, UnuserFollow } from '@/api/user.js'
+import hmCommentArea from '@/components/hm_commentArea'
 export default {
+  components: {
+    hmCommentArea
+  },
   data () {
     return {
       articleDetailData: {},

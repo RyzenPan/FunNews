@@ -39,3 +39,10 @@ export const getCommentData = (id) => {
     url: `/post_comment/${id}`
   })
 }
+
+// 文章收藏
+export const ArticleStar = (id) => {
+  return axios({
+    url: `/post_star/${id}`
+  })
+}

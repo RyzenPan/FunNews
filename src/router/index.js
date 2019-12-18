@@ -10,6 +10,7 @@ import Search from '@/views/Search.vue'
 import Category from '@/views/Category.vue'
 import ArticleDetail from '@/views/ArticleDetail.vue'
 import SearchList from '@/views/SearchList.vue'
+import Error from '@/components/hm_Error.vue'
 
 /**
  * 重写路由的push方法
@@ -22,6 +23,11 @@ VueRouter.prototype.push = function push (location) {
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '*',
+    name: 'Error',
+    component: Error
+  },
   {
     path: '/login',
     name: 'Login',

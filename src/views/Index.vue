@@ -11,7 +11,7 @@
       </div>
     </div>
     <!-- Tab导航栏 -->
-    <van-tabs v-model="active" sticky swipeable>
+    <van-tabs v-model="active" sticky swipeable animated>
       <van-tab :title="cate.name" v-for="cate in cateList" :key="cate.id">
         <van-list
           v-model="cate.loading"
