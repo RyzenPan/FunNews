@@ -14,6 +14,7 @@ import Error from '@/components/hm_Error.vue'
 import MyCollect from '@/views/MyCollect.vue'
 import MyKeeps from '@/views/MyKeeps.vue'
 import test from '@/views/test.vue'
+import Comments from '@/views/comments.vue'
 
 /**
  * 重写路由的push方法
@@ -97,6 +98,11 @@ const routes = [
     path: '/myKeeps',
     name: 'MyKeeps',
     component: MyKeeps
+  },
+  {
+    path: '/comments/:id',
+    name: 'Comments',
+    component: Comments
   }
 ]
 

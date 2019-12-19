@@ -7,24 +7,40 @@
 
       <div class="searchInput">
         <van-icon name="search" class="searchIcon" />
-        <input type="text" placeholder="输入搜索" ref="inputSearch" autofocus />
+        <input
+          type="text"
+          v-model="searchInputContent"
+          placeholder="输入搜索"
+          ref="inputSearch"
+          @keyup="searchChange"
+        />
       </div>
       <div class="searchBtn" @click="searchNews">搜索</div>
     </div>
-    <div class="history">
+    <!-- 推荐列表 -->
+    <div class="recomm" v-if="searchInputContent">
+      <ul v-for="item in searchRecomm" :key="item.id">
+        <li @click="goRecommList(item.id)">
+          {{item.title}}
+          <span class="iconfont iconjiantou1"></span>
+        </li>
+      </ul>
+    </div>
+    <!-- 历史记录 -->
+    <div class="history" v-if="!searchInputContent">
       <h4>历史记录</h4>
       <div class="historyContent">
         <van-tag
           type="warning"
-          @click="tagSearch(item)"
+          @click="searchNews(item)"
           size="medium"
-          v-for="(item,index) in hotSearch"
+          v-for="(item,index) in historyList"
           :key="index"
         >{{item}}</van-tag>
       </div>
     </div>
     <!-- 热门搜索 -->
-    <div class="hotSearch">
+    <div class="hotSearch" v-if="!searchInputContent">
       <h4>热门搜索</h4>
       <div class="hotContent">
         <van-tag
@@ -44,15 +60,9 @@
 import { getSearchList } from '@/api/post.js'
 
 export default {
-  data () {
+  data() {
     return {
-      historyList: [
-        '没有披风的超人',
-        '张鲁一王子文不在一个季节',
-        '武汉大学清退92名国际学生',
-        '安娜卡里娜去世',
-        '岳岳北京藏宝'
-      ],
+      historyList: [],
       hotSearch: [
         '北京暴雪蓝色预警新',
         '艺术家陆建艺去世',
@@ -60,20 +70,33 @@ export default {
         '黄心颖返回香港',
         'AmazingJ离队新',
         '周杰伦新歌上线'
-      ]
+      ],
+      searchInputContent: '',
+      searchRecomm: []
     }
   },
-  async mounted () {
-    const res = await getSearchList()
-    console.log(res)
+  // watch: {
+  //   async searchInputContent() {
+  //     const res = await getSearchList({
+  //       keyword: this.searchInputContent
+  //     })
+  //     console.log(res)
+  //     this.searchInputContent = res.data.data
+  //   }
+  // },
+  async mounted() {
+    this.historyList =
+      JSON.parse(localStorage.getItem('hm_SearchHistory')) || []
+    // const res = await getSearchList()
+    // console.log(res)
   },
   methods: {
-    tagSearch (value) {
+    tagSearch(value) {
       // 获得点击标签tag的值
-      console.log(value)
-      this.$refs.inputSearch.focus()
+      // console.log(value)
+      // this.$refs.inputSearch.focus()
     },
-    async searchNews () {
+    async searchNews(searchResult) {
       // let searchKeywords = this.$refs.inputSearch.value
       // console.log(searchKeywords)
       // const { data: res } = await getSearchTotal({
@@ -83,9 +106,43 @@ export default {
       // })
       // console.log(res)
       // 抓取输入框内容带到搜索内容页
-      let keyword = this.$refs.inputSearch.value
-      console.log(keyword)
+      let keywordArr =
+        JSON.parse(localStorage.getItem('hm_SearchHistory')) || []
+
+      // this.searchInputContent =
+      let keyword = this.searchInputContent || searchResult
+      keywordArr.forEach((item, index) => {
+        if (item === keyword) {
+          keywordArr.splice(index, 1)
+        }
+      })
+      keywordArr.unshift(keyword)
+      localStorage.setItem('hm_SearchHistory', JSON.stringify(keywordArr))
+
       this.$router.push({ name: 'SearchList', params: { keyword } })
+    },
+    // 实现输入文字推荐搜索结果
+    async searchChange() {
+      if (this.searchInputContent !== ' ') {
+        const res = await getSearchList({
+          keyword: this.searchInputContent
+        })
+        this.searchRecomm = res.data.data
+      }
+    },
+    goRecommList(id) {
+      let keywordArr =
+        JSON.parse(localStorage.getItem('hm_SearchHistory')) || []
+
+      let keyword = this.searchInputContent
+      keywordArr.forEach((item, index) => {
+        if (item === keyword) {
+          keywordArr.splice(index, 1)
+        }
+      })
+      keywordArr.unshift(keyword)
+      localStorage.setItem('hm_SearchHistory', JSON.stringify(keywordArr))
+      this.$router.push({ path: `/articleDetail/${id}` })
     }
   }
 }
@@ -143,6 +200,17 @@ export default {
       margin-bottom: 10px;
       margin-right: 10px;
     }
+  }
+}
+.recomm {
+  li {
+    height: 60px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    font-size: 14px;
+    justify-content: space-between;
+    padding: 0 20px;
+    align-items: center;
   }
 }
 </style>

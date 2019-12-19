@@ -40,19 +40,24 @@
       <h2>精彩跟帖</h2>
       <div class="item" v-for="comment in commentData" :key="comment.id">
         <div class="head">
-          <img :src="'http://127.0.0.1:3000'+comment.user.head_img" alt />
+          <img :src="comment.user.head_img" alt />
           <div>
             <p>{{comment.user.nickname}}</p>
             <span>2小时前</span>
           </div>
-          <span>回复</span>
+          <span @click="replaceBtn(comment)">回复</span>
         </div>
         <div class="text">{{comment.content}}</div>
       </div>
       <div class="more">更多跟帖</div>
     </div>
     <!-- 底部固定评论 -->
-    <hmCommentArea :article="articleDetailData"></hmCommentArea>
+    <hmCommentArea
+      :replayObj="replayObj"
+      :article="articleDetailData"
+      @cencelArea="replayObj = null"
+      @refresh="init"
+    ></hmCommentArea>
   </div>
 </template>
 
@@ -67,23 +72,17 @@ export default {
   data() {
     return {
       articleDetailData: {},
-      commentData: []
+      commentData: [],
+      replayObj: {}
     }
   },
-  async mounted() {
-    // 根据id获取文章的详情，实现文章详情的动态渲染
-    const res = await getArticleDetail(this.$route.params.id)
-    console.log(res)
-    if (res.status !== 200) {
-      return this.$toast.fail('获取数据失败')
-    }
-    this.articleDetailData = res.data.data
-
-    // 获取评论列表
-    const res1 = await getCommentData(this.$route.params.id)
-    this.commentData = res1.data.data
+  mounted() {
+    this.init()
   },
   methods: {
+    replaceBtn(comment) {
+      this.replayObj = comment
+    },
     async userFollowBtn(uid) {
       let res = {}
       if (!localStorage.getItem('hm_token')) {
@@ -118,6 +117,24 @@ export default {
         this.articleDetailData.like_length++
       }
       this.articleDetailData.has_like = !this.articleDetailData.has_like
+    },
+    // 评论完了之后刷新页面
+    async init() {
+      // 根据id获取文章的详情，实现文章详情的动态渲染
+      const res = await getArticleDetail(this.$route.params.id)
+      console.log(res)
+      if (res.status !== 200) {
+        return this.$toast.fail('获取数据失败')
+      }
+      this.articleDetailData = res.data.data
+
+      // 获取评论列表
+      const res1 = await getCommentData(this.$route.params.id)
+      this.commentData = res1.data.data.map(item => {
+        item.user.head_img =
+          localStorage.getItem('hm_baseURL') + item.user.head_img
+        return item
+      })
     }
   }
 }

@@ -2,7 +2,7 @@
   <div class="comment">
     <div class="addcomment" v-show="!isFocus">
       <input type="text" placeholder="写跟帖" @focus="handlerFocus" />
-      <span class="comment">
+      <span class="comment" @click="$router.push({path: `/comments/${article.id}`})">
         <i class="iconfont iconpinglun-"></i>
         <em>{{article.comment_length}}</em>
       </span>
@@ -10,11 +10,11 @@
       <i class="iconfont iconfenxiang"></i>
     </div>
     <div class="inputcomment" v-show="isFocus">
-      <textarea ref="commtext" rows="5"></textarea>
+      <textarea ref="commtext" rows="5" :placeholder="placeholder"></textarea>
       <div>
         <span @click="sendThisComment">发送</span>
         <br />
-        <span @click="isFocus=false">取消</span>
+        <span @click="cencelArea">取消</span>
       </div>
     </div>
   </div>
@@ -23,43 +23,58 @@
 <script>
 import { ArticleStar, coommentSend } from '@/api/post.js'
 export default {
-  props: ['article'],
-  data () {
+  props: ['article', 'replayObj'],
+  data() {
     return {
-      isFocus: false
+      isFocus: false,
+      placeholder: ''
+    }
+  },
+  watch: {
+    replayObj() {
+      console.log(this.replayObj)
+      if (this.replayObj) {
+        this.isFocus = true
+        this.placeholder = '@' + this.replayObj.user.nickname
+      }
     }
   },
   methods: {
     //   获取焦点时触发
-    handlerFocus () {
+    handlerFocus() {
       this.isFocus = !this.isFocus
       setTimeout(() => {
         this.$refs.commtext.focus()
       }, 1)
     },
     // 实现文章收藏功能
-    async starThisArticle () {
+    async starThisArticle() {
       const res = await ArticleStar(this.$route.params.id)
       console.log(res)
       this.article.has_star = !this.article.has_star
       this.$toast.success(res.data.message)
     },
     // 发送留言
-    async sendThisComment () {
-      const res = await coommentSend(this.article.id, {
-        id: this.article.id,
-        content: this.$refs.commtext.value,
-        parent_id: this.article.user.id
-      })
-      // console.log(res)
+    async sendThisComment() {
+      let sendData = {
+        content: this.$refs.commtext.value
+      }
+      if (this.replayObj) {
+        sendData.parent_id = this.replayObj.id
+      }
+      const res = await coommentSend(this.article.id, sendData)
       if (res.status !== 200) {
         return this.$toast.fail(res.data.message)
       }
-      // this.router.push({留言页})
       this.$toast.success(res.data.message)
       this.$refs.commtext.value = ''
       this.isFocus = false
-      window.location.reload()
+      this.$emit('refresh')
+    },
+    // 取消留言框
+    cencelArea() {
+      this.isFocus = false
+      this.$emit('cencelArea')
     }
   }
 }

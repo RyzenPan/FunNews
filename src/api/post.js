@@ -7,12 +7,13 @@ export const getPostList = (params) => {
   })
 }
 
-export const getSearchList = () => {
+// 获取搜索建议
+export const getSearchList = (params) => {
   return axios({
-    url: '/post_search_recommend'
+    url: '/post_search_recommend',
+    params
   })
 }
-
 export const getSearchTotal = (params) => {
   return axios({
     url: '/post_search',

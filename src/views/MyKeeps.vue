@@ -7,54 +7,22 @@
     <div class="commentItem" v-for="item in keepsList" :key="item.id">
       <div class="answer">
         <div class="time">2019-12-9 10:09</div>
-        <div class="sour">
-          <p>回复：{{item.parent.user.nickname}}</p>
-          <div>{{item.post.title}}</div>
-        </div>
-        <div class="myanswer">{{item.content}}</div>
-        <div class="content">原文：{{item.post.title}}</div>
-      </div>
-    </div>
 
-    <!-- <div class="commentItem">
-      <div class="answer">
-        <div class="time">1029-9-9 10:09</div>
-        <div class="sour">
-          <p>回复：火星</p>
-          <div>朱婷佩服巩俐演郎平：让人震惊 感觉郎导就在眼前</div>
+        <div class="sour" v-if="item.parent">
+          <p>回复：{{item.parent.user.nickname}}</p>
+          <div>{{item.parent.content}}</div>
         </div>
-        <div class="myanswer">很好</div>
-        <div
-          class="content"
-        >原文：近日，朱婷谈到此前参与到陈可辛电影《中国女排》的拍摄时，朱婷表示，“这是我第一次参加电影拍摄，我感觉演员比较难，运动员只要把技术展现出来就好，演员要根据导演要求，打球的同时，还要从表情和情绪展现出来内涵</div>
+
+        <div class="myanswer">{{item.content}}</div>
+        <div class="title">
+          <div
+            class="content"
+            @click="$router.push({path: `/articleDetail/${item.post.id}`})"
+          >原文：{{item.post.title}}</div>
+          <span class="iconfont iconjiantou1"></span>
+        </div>
       </div>
     </div>
-    <div class="commentItem">
-      <div class="answer">
-        <div class="time">1029-9-9 10:09</div>
-        <div class="sour">
-          <p>回复：火星</p>
-          <div>朱婷佩服巩俐演郎平：让人震惊 感觉郎导就在眼前</div>
-        </div>
-        <div class="myanswer">很好</div>
-        <div
-          class="content"
-        >原文：近日，朱婷谈到此前参与到陈可辛电影《中国女排》的拍摄时，朱婷表示，“这是我第一次参加电影拍摄，我感觉演员比较难，运动员只要把技术展现出来就好，演员要根据导演要求，打球的同时，还要从表情和情绪展现出来内涵</div>
-      </div>
-    </div>
-    <div class="commentItem">
-      <div class="answer">
-        <div class="time">1029-9-9 10:09</div>
-        <div class="sour">
-          <p>回复：火星</p>
-          <div>朱婷佩服巩俐演郎平：让人震惊 感觉郎导就在眼前</div>
-        </div>
-        <div class="myanswer">很好</div>
-        <div
-          class="content"
-        >原文：近日，朱婷谈到此前参与到陈可辛电影《中国女排》的拍摄时，朱婷表示，“这是我第一次参加电影拍摄，我感觉演员比较难，运动员只要把技术展现出来就好，演员要根据导演要求，打球的同时，还要从表情和情绪展现出来内涵</div>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -70,13 +38,11 @@ export default {
   components: {
     myheader
   },
-  mounted() {
-    getUserComments().then(res => {
-      console.log(res)
-      if (res.status === 200) {
-        this.keepsList = res.data.data
-      }
-    })
+  async mounted() {
+    const res = await getUserComments()
+    console.log(res)
+    this.keepsList = res.data.data
+    console.log(this.keepsList)
   }
 }
 </script>
@@ -104,7 +70,7 @@ export default {
     }
   }
   > .answer {
-    padding: 15px 0;
+    padding: 0 0 15px 0;
     border-bottom: 1px solid #ccc;
     > .time {
       color: #999;
@@ -134,6 +100,13 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
     }
+  }
+}
+.title {
+  display: flex;
+  justify-content: space-between;
+  span {
+    font-size: 14px;
   }
 }
 </style>
