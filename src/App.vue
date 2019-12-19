@@ -14,10 +14,10 @@
   opacity: 1;
 }
 .fade-enter-active {
-  transition: all 0.3s;
+  transition: opacity 0.3s;
 }
 .fade-leave-active {
   opacity: 0;
-  transition: all 0.3s;
+  transition: opacity 0.3s;
 }
 </style>

@@ -1,23 +1,26 @@
 <template>
   <div class="hm_focusCell">
     <div class="left">
-      <img src="http://127.0.0.1:3000/uploads/image/default.jpeg" alt />
+      <img :src="picURL" alt />
       <div>
         <h3>{{title}}</h3>
         <p>{{date}}</p>
       </div>
     </div>
     <div class="right">
-      <slot name="rightBtn"></slot>
+      <slot name="rightBtn" @click="cancelFocus"></slot>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['title', 'date'],
+  props: ['title', 'date', 'picURL'],
   methods: {
     handleClick (e) {
+      this.$emit('click', e)
+    },
+    cancelFocus (e) {
       this.$emit('click', e)
     }
   }

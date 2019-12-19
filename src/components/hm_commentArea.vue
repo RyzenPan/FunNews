@@ -59,6 +59,7 @@ export default {
       this.$toast.success(res.data.message)
       this.$refs.commtext.value = ''
       this.isFocus = false
+      window.location.reload()
     }
   }
 }

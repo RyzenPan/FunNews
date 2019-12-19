@@ -30,7 +30,7 @@ export const editUser = (id, data) => {
   })
 }
 
-export const getFocusListInfo = (id) => {
+export const getFocusListInfo = () => {
   return axios({
     url: `/user_follows`
   })
@@ -45,5 +45,19 @@ export const userFollow = (id) => {
 export const UnuserFollow = (id) => {
   return axios({
     url: `/user_unfollow/${id}`
+  })
+}
+
+// 获取用户收藏列表
+export const getCollectData = () => {
+  return axios({
+    url: `/user_star`
+  })
+}
+
+// 获取用户跟帖列表
+export const getUserComments = () => {
+  return axios({
+    url: `/user_comments`
   })
 }

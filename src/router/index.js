@@ -11,6 +11,9 @@ import Category from '@/views/Category.vue'
 import ArticleDetail from '@/views/ArticleDetail.vue'
 import SearchList from '@/views/SearchList.vue'
 import Error from '@/components/hm_Error.vue'
+import MyCollect from '@/views/MyCollect.vue'
+import MyKeeps from '@/views/MyKeeps.vue'
+import test from '@/views/test.vue'
 
 /**
  * 重写路由的push方法
@@ -24,6 +27,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/test',
+    name: 'test',
+    component: test
+  },
+  {
     path: '*',
     name: 'Error',
     component: Error
@@ -36,19 +44,19 @@ const routes = [
   {
     path: '/',
     name: 'Index',
-    component: Index
+    component: Index,
+    children: [
+      {
+        path: '/category',
+        name: 'Category',
+        component: Category
+      }
+    ]
   },
   {
     path: '/personal/:id',
     name: 'Personal',
-    component: Personal,
-    children: [
-      {
-        path: 'myFocus',
-        name: 'MyFocus',
-        component: MyFocus
-      }
-    ]
+    component: Personal
   },
   {
     path: '/search',
@@ -71,14 +79,24 @@ const routes = [
     component: Register
   },
   {
-    path: '/category',
-    name: 'Category',
-    component: Category
-  },
-  {
     path: '/articleDetail/:id',
     name: 'ArticleDetail',
     component: ArticleDetail
+  },
+  {
+    path: '/myFocus',
+    name: 'MyFocus',
+    component: MyFocus
+  },
+  {
+    path: '/myCollect',
+    name: 'MyCollect',
+    component: MyCollect
+  },
+  {
+    path: '/myKeeps',
+    name: 'MyKeeps',
+    component: MyKeeps
   }
 ]
 

@@ -5,23 +5,31 @@
       <!-- <span slot="right">退出</span> -->
     </hmheader>
     <!-- 关注列表 -->
-    <hmFocusCell title="火星新闻播报" date="2019-10-10">
-      <div slot="rightBtn" class="cancelBtn">取消关注</div>
-    </hmFocusCell>
+    <div class="list">
+      <hmFocusCell
+        v-for="(item,index) in focusList"
+        :key="item.id"
+        :title="item.nickname"
+        :picURL="item.head_img"
+        date="2019-10-10"
+      >
+        <div slot="rightBtn" class="cancelBtn" @click="cancelFocus(item.id,index)">取消关注</div>
+      </hmFocusCell>
+    </div>
   </div>
 </template>
 
 <script>
 import hmheader from '@/components/hm_header'
 import hmFocusCell from '@/components/hm_focusCell.vue'
-import { getFocusListInfo } from '@/api/user'
+import { getFocusListInfo, UnuserFollow } from '@/api/user'
 export default {
-  data () {
+  data() {
     return {
       focusList: {}
     }
   },
-  mounted () {
+  mounted() {
     this.getFocusList()
   },
   components: {
@@ -29,11 +37,23 @@ export default {
     hmFocusCell
   },
   methods: {
-    async getFocusList () {
-      // 发ajax请求获取数据
-      console.log(this.$route)
-      const { data: res } = await getFocusListInfo(this.$route.params.id)
-      console.log(res)
+    // 获取关注列表
+    async getFocusList() {
+      const res = await getFocusListInfo()
+      if (res.status === 200) {
+        this.focusList = res.data.data.map(item => {
+          item.head_img = localStorage.getItem('hm_baseURL') + item.head_img
+          return item
+        })
+      }
+    },
+    // 取消关注用户
+    async cancelFocus(id, index) {
+      const res = await UnuserFollow(id)
+      if (res.data.message === '取消关注成功') {
+        this.$toast.success(res.data.message)
+        this.focusList.splice(index, 1)
+      }
     }
   }
 }
@@ -46,5 +66,8 @@ export default {
   color: #333;
   background-color: #e1e1e1;
   border-radius: 17px;
+}
+.focus {
+  height: 100vh;
 }
 </style>

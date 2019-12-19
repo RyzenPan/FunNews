@@ -23,14 +23,14 @@
     <div class="channel">
       <p>点击添加一下频道</p>
       <div class="addChannel">
-        <van-tag plain type="success" size="large" closeable>标签</van-tag>
-        <van-tag plain type="success" size="large" closeable>标签</van-tag>
-        <van-tag plain type="success" size="large" closeable>标签</van-tag>
-        <van-tag plain type="success" size="large" closeable>标签</van-tag>
-        <van-tag plain type="success" size="large" closeable>标签</van-tag>
-        <van-tag plain type="success" size="large" closeable>标签</van-tag>
-        <van-tag plain type="success" size="large" closeable>标签</van-tag>
-        <van-tag plain type="success" size="large" closeable>标签</van-tag>
+        <van-tag plain type="success" size="large">标签</van-tag>
+        <van-tag plain type="success" size="large">标签</van-tag>
+        <van-tag plain type="success" size="large">标签</van-tag>
+        <van-tag plain type="success" size="large">标签</van-tag>
+        <van-tag plain type="success" size="large">标签</van-tag>
+        <van-tag plain type="success" size="large">标签</van-tag>
+        <van-tag plain type="success" size="large">标签</van-tag>
+        <van-tag plain type="success" size="large">标签</van-tag>
       </div>
     </div>
   </div>

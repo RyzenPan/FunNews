@@ -11,6 +11,22 @@
       </div>
     </div>
     <!-- Tab导航栏 -->
+    <!-- <van-tabs v-model="active" sticky swipeable animated>
+      <van-tab :title="cate.name" v-for="cate in cateList" :key="cate.id">
+        <van-list
+          v-model="cate.loading"
+          :immediate-check="false"
+          :offset="10"
+          :finished="cate.finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <van-pull-refresh v-model="cate.isLoading" @refresh="onRefresh">
+            <hmPostCell v-for="post in cate.postList" :key="post.id" :post="post"></hmPostCell>
+          </van-pull-refresh>
+        </van-list>
+      </van-tab>
+    </van-tabs>-->
     <van-tabs v-model="active" sticky swipeable animated>
       <van-tab :title="cate.name" v-for="cate in cateList" :key="cate.id">
         <van-list
@@ -38,13 +54,14 @@ export default {
   components: {
     hmPostCell
   },
-  data () {
+  data() {
     return {
       active: localStorage.getItem('hm_token') ? 1 : 0,
+      // active: 1,
       cateList: []
     }
   },
-  async mounted () {
+  async mounted() {
     const res = await getCateList()
     if (res.status !== 200) {
       return this.$toast.fail('请求数据失败')
@@ -62,18 +79,19 @@ export default {
         isLoading: false
       }
     })
+    // this.cateList.push({ name: '分类管理' })
     console.log(this.cateList)
     this.getPostListFunc()
   },
   watch: {
-    active () {
+    active() {
       if (this.cateList[this.active].postList.length === 0) {
         this.getPostListFunc()
       }
     }
   },
   methods: {
-    async getPostListFunc () {
+    async getPostListFunc() {
       const res = await getPostList({
         category: this.cateList[this.active].id,
         pageIndex: this.cateList[this.active].pageIndex,
@@ -88,14 +106,14 @@ export default {
       }
     },
     // 加载更多插件
-    onLoad () {
+    onLoad() {
       this.cateList[this.active].pageIndex++
       setTimeout(() => {
         this.getPostListFunc()
       }, 2000)
     },
     // 下拉刷新
-    onRefresh () {
+    onRefresh() {
       this.cateList[this.active].pageIndex = 1
       this.cateList[this.active].finished = false
       setTimeout(() => {
@@ -107,7 +125,7 @@ export default {
       }, 500)
     },
     // 跳转到个人信息页面
-    myPersonal () {
+    myPersonal() {
       this.$router.push({
         // 如果本地存储中没有id，则直接返回1，然后通过拦截器跳转到登录页面
         path: `/personal/${window.localStorage.getItem('hm_userId') || 1}`
@@ -119,6 +137,7 @@ export default {
 
 <style lang="less" scoped>
 .index {
+  height: 100vh;
   .header {
     padding: 0 10px;
     height: 49 * 100vw /360;

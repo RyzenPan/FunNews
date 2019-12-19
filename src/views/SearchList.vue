@@ -29,25 +29,31 @@ export default {
       cateList: []
     }
   },
-  async mounted () {
-    // console.log(this.$route.params.keyword)
-    let keyword = this.$route.params.keyword
-    const res = await getSearchTotal({
-      keyword,
-      pageIndex: 1,
-      pageSize: 99
-    })
-    console.log(res)
-    this.cateList = res.data.data
+  mounted () {
+    this.getSearchResult()
   },
   methods: {
-    searchNews () {}
+    searchNews () {
+      this.getSearchResult(this.$refs.inputSearch.value)
+    },
+    async getSearchResult (keyword) {
+      // console.log(this.$route.params.keyword)
+      keyword = this.$route.params.keyword
+      const res = await getSearchTotal({
+        keyword,
+        pageIndex: 1,
+        pageSize: 99
+      })
+      console.log(res)
+      this.cateList = res.data.data
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
 .search {
+  height: 100vh;
   .header {
     height: 60px;
     display: flex;

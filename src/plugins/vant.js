@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Toast, Uploader, Dialog, Field, Picker, Popup, Icon, Tab, Tabs, Tag, List, PullRefresh } from 'vant'
+import { Toast, Uploader, Dialog, Field, Picker, Popup, Icon, Tab, Tabs, Tag, List, PullRefresh, SwipeCell, Button } from 'vant'
 import 'vant/lib/index.css'
 
 Vue.use(Toast)
@@ -14,3 +14,5 @@ Vue.use(Tabs)
 Vue.use(Tag)
 Vue.use(List)
 Vue.use(PullRefresh)
+Vue.use(SwipeCell)
+Vue.use(Button)

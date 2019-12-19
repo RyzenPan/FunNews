@@ -71,6 +71,7 @@ export default {
     tagSearch (value) {
       // 获得点击标签tag的值
       console.log(value)
+      this.$refs.inputSearch.focus()
     },
     async searchNews () {
       // let searchKeywords = this.$refs.inputSearch.value
@@ -92,6 +93,7 @@ export default {
 
 <style lang="less" scoped>
 .search {
+  height: 100vh;
   .header {
     height: 60px;
     display: flex;

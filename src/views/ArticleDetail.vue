@@ -64,13 +64,13 @@ export default {
   components: {
     hmCommentArea
   },
-  data () {
+  data() {
     return {
       articleDetailData: {},
       commentData: []
     }
   },
-  async mounted () {
+  async mounted() {
     // 根据id获取文章的详情，实现文章详情的动态渲染
     const res = await getArticleDetail(this.$route.params.id)
     console.log(res)
@@ -84,7 +84,7 @@ export default {
     this.commentData = res1.data.data
   },
   methods: {
-    async userFollowBtn (uid) {
+    async userFollowBtn(uid) {
       let res = {}
       if (!localStorage.getItem('hm_token')) {
         return this.$router.push({ name: 'Login' })
@@ -105,7 +105,7 @@ export default {
       }
       this.articleDetailData.has_follow = !this.articleDetailData.has_follow
     },
-    async likeBtn (id) {
+    async likeBtn(id) {
       if (!localStorage.getItem('hm_token')) {
         return this.$router.push({ name: 'Login' })
       }
@@ -124,6 +124,9 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.articaldetail {
+  height: 100vh;
+}
 .header {
   padding: 0px 10px;
   height: 50px;
